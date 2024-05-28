@@ -1,0 +1,56 @@
+// Alumno: Efrain Isaac Rebolledo Jimenez
+// Matricula: 2173036034  
+// Descripcion del proyecto: Codigo de un sistema de monitoreo de consumo electrico con ASC712 
+// Arduino uno y un display LCD de 16x2.
+
+#include <LiquidCrystal.h>
+
+LiquidCrystal lcd(7, 6, 5, 4, 3, 2); // Configuración de los pines para la pantalla LCD
+
+const int ACS712_PIN = A0; // Pin al que está conectado el sensor ACS712
+const float SENSITIVITY = 66; // Sensibilidad del sensor ACS712 en (V/A)
+const float OFFSET_VOLTAGE = 2500; // Voltaje de offset del sensor ACS712 en mV
+
+void setup() {
+  Serial.begin(9600);
+  lcd.begin(16, 2); // Inicialización de la pantalla LCD 16x2
+  lcd.print(" PROYECTO TERMINAL ");
+  lcd.setCursor(0, 1);
+  lcd.print("  EIRJ  ");
+  delay(2000);
+}
+
+void loop() {
+  int adcValue = analogRead(ACS712_PIN);
+  float adcVoltage = (adcValue / 1024.0) * 5000; // Convertir valor ADC a voltaje en mV
+  float current = ((adcVoltage - OFFSET_VOLTAGE) / SENSITIVITY); // Calcular corriente en A
+  
+  Serial.print("Raw Sensor Value = ");
+  Serial.print(adcValue);
+  
+  lcd.clear();
+  delay(500);
+  lcd.setCursor(0, 0);
+  lcd.print("ADC Value =     ");
+  lcd.setCursor(12, 0);
+  lcd.print(adcValue);
+  delay(800);
+  
+  Serial.print("\t Voltage(mV) = ");
+  Serial.print(adcVoltage, 3);
+  lcd.setCursor(0, 0);
+  lcd.print("V in mV =       ");
+  lcd.setCursor(10, 0);
+  lcd.print(adcVoltage, 1);
+  delay(800);
+  
+  Serial.print("\t Current = ");
+  Serial.println(current, 3);
+  lcd.setCursor(0, 0);
+  lcd.print("Current =       ");
+  lcd.setCursor(10, 0);
+  lcd.print(current, 2);
+  lcd.setCursor(14, 0);
+  lcd.print("A");
+  delay(1000);
+}
