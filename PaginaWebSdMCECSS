@@ -1,0 +1,212 @@
+/* Estilos generales */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    position: relative;
+    min-height: 100vh;
+}
+
+.container {
+    width: 90%;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Barra de navegación */
+
+.logo {
+    font-size: 24px;
+    text-decoration: none;
+    color: #fff;
+}
+
+/* Barra de navegación */
+.navbar {
+    background-color: #6a0dad; /* Cambio de color a morado */
+    color: #fff;
+    padding: 10px 20px;
+    display: flex;
+    justify-content: space-between; /* Alineación horizontal entre elementos */
+}
+
+.nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: flex-end; /* Alineación hacia el lado derecho */
+}
+
+.nav-links li {
+    margin-left: 20px;
+}
+
+.nav-links li:first-child {
+    margin-left: 0;
+}
+
+.nav-links li a {
+    text-decoration: none;
+    color: #fff;
+}
+
+
+/* Contenido */
+.content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding-top: 60px;
+}
+
+.section {
+    background-color: #fff;
+    padding: 40px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.section-title {
+    color: #6a0dad;
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.section-content {
+    color: #333;
+    font-size: 18px;
+}
+
+/* Formulario */
+.formulario-contacto {
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+
+.formulario-contacto h1,
+.formulario-contacto h2 {
+    color: #6a0dad;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.submit-button {
+    width: 100%;
+    background-color: #6a0dad;
+    color: #fff;
+    padding: 10px 0;
+    font-size: 18px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.submit-button:hover {
+    background-color: #4b0082;
+}
+
+/* Pie de página */
+.footer {
+    background-color: #6a0dad;
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+}
+
+.footer img {
+    width: 100px;
+    margin: 0 10px;
+}
+/* Formulario */
+.formulario-contacto {
+    width: 100%;
+    max-width: 600px; /* Aumentamos el ancho máximo del formulario */
+    margin: 0 auto; /* Centramos horizontalmente */
+    padding: 20px 40px; /* Ajustamos el padding para dar más espacio */
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: left;
+}
+/* Pie de página en la sección de contacto */
+.contacto-section .footer {
+    background-color: #6a0dad; /* Color morado */
+    color: #fff;
+    text-align: center;
+    padding: 20px 0; /* Ajustamos el padding para dar más espacio */
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
+/* Ajuste del margen inferior del formulario en la sección de contacto */
+.contacto-section .formulario-contacto {
+    margin-bottom: 150px; /* Aumentamos el margen inferior para dejar espacio al pie de página */
+}
+
+/* Ajuste del margen inferior del formulario en la sección de historial de consumo */
+.historial-section .login-form {
+    margin-bottom: 120px; /* Incrementamos el margen inferior del formulario */
+}
+
+/* Ajuste del pie de página en la sección de historial de consumo */
+.historial-section .footer {
+    margin-top: 20px; /* Añadimos un margen superior al pie de página */
+}
+
+/* Ajuste del pie de página en la sección de historial de consumo */
+.historial-section .footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: #6a0dad; /* Color morado */
+    color: #fff;
+    text-align: center;
+    padding: 20px 0;
+    z-index: 1000; /* Asegura que esté por encima de otros elementos */
+
+/* Estilos para las imágenes en la sección de consejos */
+.consejos-section .cuerpo-consejo {
+    text-align: center; /* Centrar horizontalmente las imágenes */
+}
+
+.consejos-section .cuerpo-consejo img {
+    width: 120px; /* Ancho fijo para todas las imágenes */
+    height: 120px; /* Altura fija para crear imágenes cuadradas */
+    margin: 10px auto; /* Agregar espacio entre las imágenes */
+    display: inline-block; /* Para que las imágenes estén en línea */
+    border-radius: 8px; /* Esquinas redondeadas para suavizar los bordes */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra suave */
+}
+
