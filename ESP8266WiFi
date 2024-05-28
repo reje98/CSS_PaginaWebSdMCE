@@ -1,0 +1,140 @@
+
+#include <Arduino.h>
+#include <ESP8266WiFi.h>
+#include <FirebaseESP8266.h>
+
+// Proporciona información sobre el proceso de generación de token.
+#include <addons/TokenHelper.h>
+
+// Proporciona información sobre la carga útil de RTDB y otras funciones auxiliares.
+#include <addons/RTDBHelper.h>
+
+/* 1. Definir las credenciales de WiFi */
+#define WIFI_SSID "Mega_2.4G_59F2"
+#define WIFI_PASSWORD "5KAHbzQu"
+
+/* 2. Definir la clave API */
+#define API_KEY "AIzaSyBTiJN1uWqwdKh_Fx_bWy-G5WsoxspgW-c"
+
+/* 3. Definir la URL de RTDB */
+#define DATABASE_URL "sdmceiot-pt2-default-rtdb.firebaseio.com/"
+
+/* 4. Definir el correo electrónico y la contraseña del usuario que ya está registrado o añadido en tu proyecto */
+#define USER_EMAIL "2173036034@correo.ler.uam.mx"
+#define USER_PASSWORD "Rebolledo12"
+
+// Definir el objeto de datos de Firebase
+FirebaseData fbdo;
+
+FirebaseAuth auth;
+FirebaseConfig config;
+
+unsigned long sendDataPrevMillis = 0;
+unsigned long count = 0;
+
+#if defined(ARDUINO_RASPBERRY_PI_PICO_W)
+WiFiMulti multi;
+#endif
+
+void setup()
+{
+  Serial.begin(115200);
+
+#if defined(ARDUINO_RASPBERRY_PI_PICO_W)
+  multi.addAP(WIFI_SSID, WIFI_PASSWORD);
+  multi.run();
+#else
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+#endif
+
+  Serial.print("Conectando a Wi-Fi");
+  unsigned long ms = millis();
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    Serial.print(".");
+    delay(300);
+#if defined(ARDUINO_RASPBERRY_PI_PICO_W)
+    if (millis() - ms > 10000)
+      break;
+#endif
+  }
+  Serial.println();
+  Serial.print("Conectado con IP: ");
+  Serial.println(WiFi.localIP());
+  Serial.println();
+
+  Serial.printf("Cliente de Firebase v%s\n\n", FIREBASE_CLIENT_VERSION);
+
+  /* Asignar la clave API (requerida) */
+  config.api_key = API_KEY;
+
+  /* Asignar las credenciales de inicio de sesión del usuario */
+  auth.user.email = USER_EMAIL;
+  auth.user.password = USER_PASSWORD;
+
+  /* Asignar la URL de RTDB (requerida) */
+  config.database_url = DATABASE_URL;
+
+  /* Asignar la función de callback para la tarea de generación de token de larga duración */
+  config.token_status_callback = tokenStatusCallback; // ver addons/TokenHelper.h
+
+  Firebase.reconnectNetwork(true);
+
+  fbdo.setBSSLBufferSize(4096, 1024);
+
+#if defined(ARDUINO_RASPBERRY_PI_PICO_W)
+  config.wifi.clearAP();
+  config.wifi.addAP(WIFI_SSID, WIFI_PASSWORD);
+#endif
+
+  Firebase.begin(&config, &auth);
+
+  Firebase.setDoubleDigits(5);
+}
+
+void loop()
+{
+  if (Firebase.ready() && (millis() - sendDataPrevMillis > 15000 || sendDataPrevMillis == 0))
+  {
+    sendDataPrevMillis = millis();
+
+    Serial.printf("Establecer bool... %s\n", Firebase.setBool(fbdo, F("/test/bool"), count % 2 == 0) ? "ok" : fbdo.errorReason().c_str());
+    Serial.printf("Obtener bool... %s\n", Firebase.getBool(fbdo, FPSTR("/test/bool")) ? fbdo.to<bool>() ? "true" : "false" : fbdo.errorReason().c_str());
+
+    bool bVal;
+    Serial.printf("Obtener referencia bool... %s\n", Firebase.getBool(fbdo, F("/test/bool"), &bVal) ? bVal ? "true" : "false" : fbdo.errorReason().c_str());
+
+    Serial.printf("Establecer int... %s\n", Firebase.setInt(fbdo, F("/test/int"), count) ? "ok" : fbdo.errorReason().c_str());
+    Serial.printf("Obtener int... %s\n", Firebase.getInt(fbdo, F("/test/int")) ? String(fbdo.to<int>()).c_str() : fbdo.errorReason().c_str());
+
+    int iVal = 0;
+    Serial.printf("Obtener referencia int... %s\n", Firebase.getInt(fbdo, F("/test/int"), &iVal) ? String(iVal).c_str() : fbdo.errorReason().c_str());
+
+    Serial.printf("Establecer float... %s\n", Firebase.setFloat(fbdo, F("/test/float"), count + 10.2) ? "ok" : fbdo.errorReason().c_str());
+    Serial.printf("Obtener float... %s\n", Firebase.getFloat(fbdo, F("/test/float")) ? String(fbdo.to<float>()).c_str() : fbdo.errorReason().c_str());
+
+    Serial.printf("Establecer double... %s\n", Firebase.setDouble(fbdo, F("/test/double"), count + 35.517549723765) ? "ok" : fbdo.errorReason().c_str());
+    Serial.printf("Obtener double... %s\n", Firebase.getDouble(fbdo, F("/test/double")) ? String(fbdo.to<double>()).c_str() : fbdo.errorReason().c_str());
+
+    Serial.printf("Establecer string... %s\n", Firebase.setString(fbdo, F("/test/string"), "PT 2: EFRAIN ISAAC REBOLLEDO") ? "ok" : fbdo.errorReason().c_str());
+    Serial.printf("Obtener string... %s\n", Firebase.getString(fbdo, F("/test/string")) ? fbdo.to<const char *>() : fbdo.errorReason().c_str());
+
+    FirebaseJson json;
+
+    if (count == 0)
+    {
+      json.set("value/round/" + String(count), F("cool!"));
+      json.set(F("value/ts/.sv"), F("timestamp"));
+      Serial.printf("Establecer json... %s\n", Firebase.set(fbdo, F("/test/json"), json) ? "ok" : fbdo.errorReason().c_str());
+    }
+    else
+    {
+      json.add(String(count), "smart!");
+      Serial.printf("Actualizar nodo... %s\n", Firebase.updateNode(fbdo, F("/test/json/value/round"), json) ? "ok" : fbdo.errorReason().c_str());
+    }
+
+    Serial.println();
+
+    count++;
+  }
+}
